@@ -1,4 +1,5 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paranoia-watch-styles/paranoia-watch-styles.html">
 
 <!--
 `peilingwijzer-growth-list`
@@ -9,164 +10,40 @@
 
 <dom-module id="peilingwijzer-growth-list">
   <template>
-    <style>
+    <style include="paranoia-watch-styles">
       :host {
-        --color-red: rgba(255, 0, 80, 1);
-        background-color: var(--color-red);
+        display: block;
+      }
+
+      .radio-group {
+        display: flex;
+        color: white;
+      }
+
+      .radio-button {
+        color: white;
       }
 
       .container {
+        background-color: black;
         flex: 1;
         overflow: auto;
         -webkit-overflow-scrolling: touch;
-        background-color: var(--color-red);
-      }
-
-      button {
-        cursor: pointer;
-      }
-
-      header {
-        position: relative;
-        z-index: 1;
-      }
-
-      #select-period {
-        display: flex;
-        background-color: black;
-      }
-
-      #select-period button {
-        flex: 1;
-        background-color: transparent;
-        outline: none;
-        border: 2px solid transparent;
-        border-bottom-color: rgba(255, 255, 255, 0.2);
-        height: 54px;
-        color: white;
-        font-size: 18px;
-      }
-
-      #select-location {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        position: relative;
-        padding: 20px 40px;
-        box-sizing: border-box;
-      }
-
-      #select-period button[selected] {
-        border-bottom-color: white;
-      }
-
-      h1 {
-        color: black;
-        font-size: 14px;
-        font-weight: bolder;
-        margin-top: 10px;
-        text-transform: uppercase;
-      }
-
-      #selectedLocationButton {
-        flex: 1;
-        border: 0;
-        background-color: transparent;
-        color: black;
-        position: relative;
-        outline: none;
-        font-size: 18px;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        padding: 0;
-      }
-
-      #select-location select {
-        position: absolute;
-        width: 25%;
-        height: 54px;
-        opacity: 0;
-        font-size: 18px;
-        top: 20px;
-      }
-      
-      svg {
-        width: 15px;
-        height: 12px;
-      }
-
-      #selectedLocationButton svg {
-        width: 15px;
-        height: 12px;
-        margin: 3px 0 0 5px;
-      }
-
-      svg g {
-        fill: black;       
-      }
-
-      svg g:hover, svg g:active {
-        fill: white;        
-      }
-
-      main {
-        padding-bottom: 10px;
-      }
-
-      main ol {
-        counter-reset: section;
-        list-style-type: none;
-        padding: 0;
-        margin: 0;
-      }
-
-      main ol li {
-        height: 65px;
-        display: flex;
-        font-size: 18px;
-        padding: 0;
-        margin: 0 20px;
-        margin-bottom: 10px;
-      }
-
-      main ol li span {
-        display: flex;
-        flex:1;
-        height: 100%;
-        align-items: center;
-        border-bottom: 2px solid black;
-      }
-
-      main ol li::before {
-        counter-increment: section;
-        content: counters(section,".") " ";
-        width: 60px;
-        height: 100%;
-        background-color: black;
-        color: var(--color-red);
-        font-size: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 10px;
       }
     </style>
 
     <div class="container">
 
       <header>
-
-      <nav id="select-location">
-        <h1>[[title]] ([[socketData.startDate]] - [[socketData.endDate]])</h1>
-      </nav>
-
-    </header>
+        <nav class="radio-group">
+          <button class="radio-button" hidden$="[[!showHour]]" value="hour" on-tap="_selectPeriod">[[socketData.startDate]] - [[socketData.endDate]]</button>
+        </nav>
+      </header>
 
     <main>
       <ol>
         <template is="dom-repeat" items="[[items]]" rendered-item-count="10">
-          <li><span>[[item.party]] ([[item.growth]] seats)</span></li>        
+          <li data-suffix$="[[item.growth]] seats">[[item.party]]</li>        
         </template>
       </ol>
     </main>
@@ -211,8 +88,6 @@
       ],
 
       _initSocket: function(socketServerUrl, listenTo) {
-
-        console.log(socketServerUrl, listenTo);
 
         var head = document.getElementsByTagName('head')[0];
         var js = document.createElement("script");
